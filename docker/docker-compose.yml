@@ -1,0 +1,40 @@
+name: sticky_board
+
+version: "3"
+services:
+  web:
+    build: ./apache
+    ports:
+      - "80:80"
+      - "5173:5173"
+      - "6006:6006"
+    volumes:
+      - ../sticky_board:/var/www/html
+      - ./apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./apache/php.ini:/usr/local/etc/php/php.ini
+      - ./apache/apache2.conf:/etc/apache2/apache2.conf
+    environment:
+      - TZ=${TZ:-Asia/Tokyo}
+    # xdebug その名前が引けるようにするか”（名前解決の保証） php.iniは接続先の指定
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - db
+      - redis
+  db:
+    image: postgres:12.1-alpine
+    volumes:
+      - db-store:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME:-sticky_board}
+      - POSTGRES_USER=${DB_USER:-sticky_board}
+      - POSTGRES_PASSWORD=${DB_PASS:-sticky_board}
+      - TZ=${TZ:-Asia/Tokyo}
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+volumes:
+  db-store:

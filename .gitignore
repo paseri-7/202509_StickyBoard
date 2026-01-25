@@ -1,9 +1,9 @@
 # =========================
 # Secrets / env (絶対に入れない) ※.env.exampleはpush対象
 # =========================
-.env
-.env.*
-!.env.example
+# .env
+# .env.*
+# !.env.example
 
 # =========================
 # Dependencies（依存物）
