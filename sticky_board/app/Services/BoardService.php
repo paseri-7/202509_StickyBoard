@@ -29,4 +29,9 @@ class BoardService
     {
         return $this->boardRepository->create($data);
     }
+
+    public function updateBoard(int $id, array $data)
+    {
+        return $this->boardRepository->update($id, $data);
+    }
 }

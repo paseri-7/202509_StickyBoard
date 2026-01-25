@@ -28,4 +28,14 @@ class BoardController extends Controller
 
         return response()->json($this->boardService->createBoard($data));
     }
+
+    public function update(int $id, Request $request)
+    {
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        return response()->json($this->boardService->updateBoard($id, $data));
+    }
 }

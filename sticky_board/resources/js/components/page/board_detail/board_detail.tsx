@@ -235,7 +235,12 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                                 </p>
                             ) : null}
                         </div>
-                        <button className="rounded-2xl border border-slate-200 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">
+                        <button
+                            className="rounded-2xl border border-slate-200 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                            onClick={() => {
+                                window.location.href = `/boards/${board.id}/edit`;
+                            }}
+                        >
                             ボード編集
                         </button>
                     </div>

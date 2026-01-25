@@ -11,4 +11,6 @@ interface IBoardRepository
     public function findWithItems(int $id): \App\Models\Board;
 
     public function create(array $data): \App\Models\Board;
+
+    public function update(int $id, array $data): \App\Models\Board;
 }

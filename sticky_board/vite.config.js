@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/js/components/page/board_list/board_list.page.tsx',
                 'resources/js/components/page/board_detail/board_detail.page.tsx',
                 'resources/js/components/page/board_form/board_form.page.tsx',
+                'resources/js/components/page/board_form/board_edit.page.tsx',
             ],
             refresh: true,
         }),

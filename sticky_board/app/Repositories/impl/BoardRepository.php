@@ -36,4 +36,13 @@ class BoardRepository implements IBoardRepository
     {
         return Board::create($data);
     }
+
+    public function update(int $id, array $data): Board
+    {
+        $board = Board::findOrFail($id);
+        $board->fill($data);
+        $board->save();
+
+        return $board;
+    }
 }

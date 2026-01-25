@@ -6,17 +6,35 @@ type Toast = {
     message: string;
 };
 
-const BoardForm: React.FC = () => {
-    const [title, setTitle] = React.useState("");
-    const [description, setDescription] = React.useState("");
+type BoardFormProps = {
+    mode: "create" | "edit";
+    initialTitle?: string;
+    initialDescription?: string;
+    onSubmit: (payload: {
+        title: string;
+        description: string | null;
+    }) => Promise<void>;
+    onCancel: () => void;
+    onSuccessRedirect?: () => void;
+};
+
+const BoardForm: React.FC<BoardFormProps> = ({
+    mode,
+    initialTitle = "",
+    initialDescription = "",
+    onSubmit,
+    onCancel,
+    onSuccessRedirect,
+}) => {
+    const [title, setTitle] = React.useState(initialTitle);
+    const [description, setDescription] = React.useState(initialDescription);
     const [toast, setToast] = React.useState<Toast | null>(null);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
-
-    const csrfToken =
-        document
-            .querySelector('meta[name="csrf-token"]')
-            ?.getAttribute("content") ?? "";
+    const [pendingPayload, setPendingPayload] = React.useState<{
+        title: string;
+        description: string | null;
+    } | null>(null);
 
     const showToast = (next: Toast) => {
         setToast(next);
@@ -30,39 +48,46 @@ const BoardForm: React.FC = () => {
             return;
         }
 
+        setPendingPayload({
+            title: title.trim(),
+            description: description.trim() || null,
+        });
         setIsConfirmOpen(true);
     };
 
     const handleConfirmCreate = async () => {
         setIsConfirmOpen(false);
+        if (!pendingPayload) {
+            return;
+        }
 
         setIsSubmitting(true);
         try {
-            const response = await fetch("/boards", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken,
-                },
-                body: JSON.stringify({
-                    title,
-                    description: description.trim() || null,
-                }),
+            await onSubmit(pendingPayload);
+
+            showToast({
+                type: "success",
+                message: mode === "create" ? "作成しました。" : "更新しました。",
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to create board.");
-            }
-
-            showToast({ type: "success", message: "作成しました。" });
             setTimeout(() => {
-                window.location.href = "/boards";
+                if (onSuccessRedirect) {
+                    onSuccessRedirect();
+                    return;
+                }
+                window.location.href = mode === "create" ? "/boards" : "/boards";
             }, 500);
         } catch (error) {
             console.error(error);
-            showToast({ type: "error", message: "作成に失敗しました。" });
+            showToast({
+                type: "error",
+                message:
+                    mode === "create"
+                        ? "作成に失敗しました。"
+                        : "更新に失敗しました。",
+            });
         } finally {
             setIsSubmitting(false);
+            setPendingPayload(null);
         }
     };
 
@@ -71,12 +96,14 @@ const BoardForm: React.FC = () => {
             <div className="mx-auto max-w-2xl px-6 py-10">
                 <button
                     className="rounded-2xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100"
-                    onClick={() => (window.location.href = "/boards")}
+                    onClick={onCancel}
                 >
                     ← 戻る
                 </button>
                 <div className="mt-6 rounded-3xl border-2 border-pink-100 bg-white p-8 shadow-xl">
-                    <h1 className="text-2xl font-semibold">新規ボード作成</h1>
+                    <h1 className="text-2xl font-semibold">
+                        {mode === "create" ? "新規ボード作成" : "ボード編集"}
+                    </h1>
                     <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
                         <div>
                             <label className="text-sm font-semibold text-slate-700">
@@ -110,9 +137,7 @@ const BoardForm: React.FC = () => {
                             <button
                                 type="button"
                                 className="flex-1 rounded-2xl border-2 border-slate-200 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100"
-                                onClick={() =>
-                                    (window.location.href = "/boards")
-                                }
+                                onClick={onCancel}
                             >
                                 キャンセル
                             </button>
@@ -121,7 +146,13 @@ const BoardForm: React.FC = () => {
                                 disabled={isSubmitting}
                                 className="flex-1 rounded-2xl bg-gradient-to-r from-pink-400 to-violet-300 py-3 text-sm font-semibold text-white shadow-lg shadow-pink-200/60 hover:from-pink-500 hover:to-violet-400 disabled:cursor-not-allowed disabled:opacity-70"
                             >
-                                {isSubmitting ? "作成中..." : "作成"}
+                                {isSubmitting
+                                    ? mode === "create"
+                                        ? "作成中..."
+                                        : "更新中..."
+                                    : mode === "create"
+                                    ? "作成"
+                                    : "更新"}
                             </button>
                         </div>
                     </form>
@@ -143,9 +174,17 @@ const BoardForm: React.FC = () => {
             ) : null}
             <ConfirmDialog
                 open={isConfirmOpen}
-                title="ボードを作成しますか？"
-                description="入力内容で新規ボードを作成します。"
-                confirmText="作成"
+                title={
+                    mode === "create"
+                        ? "ボードを作成しますか？"
+                        : "ボードを更新しますか？"
+                }
+                description={
+                    mode === "create"
+                        ? "入力内容で新規ボードを作成します。"
+                        : "入力内容でボードを更新します。"
+                }
+                confirmText={mode === "create" ? "作成" : "更新"}
                 cancelText="キャンセル"
                 onConfirm={handleConfirmCreate}
                 onClose={() => setIsConfirmOpen(false)}

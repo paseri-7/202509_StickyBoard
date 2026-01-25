@@ -34,6 +34,10 @@ Route::get('/boards/{id}', function ($id) {
     return view('board_detail', ['id' => $id]);
 });
 Route::get('/boards/data/{id}', [BoardController::class, 'detail']);
+Route::get('/boards/{id}/edit', function ($id) {
+    return view('board_edit', ['id' => $id]);
+});
+Route::put('/boards/{id}', [BoardController::class, 'update']);
 Route::post('/boards/{id}/sticky-notes', [StickyNoteController::class, 'store']);
 Route::put('/sticky-notes/{id}', [StickyNoteController::class, 'update']);
 Route::delete('/sticky-notes/{id}', [StickyNoteController::class, 'destroy']);
