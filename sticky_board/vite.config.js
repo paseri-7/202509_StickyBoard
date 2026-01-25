@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/components/page/auth/login/login.page.tsx',
                 'resources/js/components/page/board_list/board_list.page.tsx',
+                'resources/js/components/page/board_detail/board_detail.page.tsx',
             ],
             refresh: true,
         }),

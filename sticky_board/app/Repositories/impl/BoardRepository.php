@@ -13,4 +13,22 @@ class BoardRepository implements IBoardRepository
             ->orderByDesc('updated_at')
             ->get(['id', 'title', 'description', 'updated_at']);
     }
+
+    public function findById(int $id): Board
+    {
+        return Board::query()
+            ->select(['id', 'title', 'description', 'updated_at'])
+            ->findOrFail($id);
+    }
+
+    public function findWithItems(int $id): Board
+    {
+        return Board::query()
+            ->with([
+                'stickyNotes:id,board_id,content,color,due_at,x,y,width,height',
+                'areas:id,board_id,title,x,y,width,height',
+            ])
+            ->select(['id', 'title', 'description', 'updated_at'])
+            ->findOrFail($id);
+    }
 }

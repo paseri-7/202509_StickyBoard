@@ -12,4 +12,9 @@ class BoardController extends Controller
     {
         return response()->json($this->boardService->fetchBoards());
     }
+
+    public function detail(int $id)
+    {
+        return response()->json($this->boardService->getBoardDetail($id));
+    }
 }

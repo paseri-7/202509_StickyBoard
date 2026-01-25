@@ -15,6 +15,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\IBoardRepository::class,
             \App\Repositories\impl\BoardRepository::class,
         );
+        $this->app->bind(
+            \App\Repositories\IStickyNoteRepository::class,
+            \App\Repositories\impl\StickyNoteRepository::class,
+        );
+        $this->app->bind(
+            \App\Repositories\IBoardAreaRepository::class,
+            \App\Repositories\impl\BoardAreaRepository::class,
+        );
     }
 
     /**

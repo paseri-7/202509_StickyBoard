@@ -10,9 +10,6 @@ const BoardList: React.FC = () => {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-3xl font-semibold">マイボード</h1>
-                        <p className="mt-2 text-sm text-slate-600">
-                            作成済みボードのダミーデータを表示しています。
-                        </p>
                     </div>
                     <button className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-pink-400 to-violet-300 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-pink-200/60 transition hover:from-pink-500 hover:to-violet-400">
                         新規ボード作成
@@ -23,10 +20,16 @@ const BoardList: React.FC = () => {
                         <article
                             key={board.id}
                             className="group relative overflow-hidden rounded-3xl border-2 border-transparent bg-white transition hover:-translate-y-1 hover:border-pink-200 hover:shadow-2xl"
+                            onClick={() => {
+                                window.location.href = `/boards/${board.id}`;
+                            }}
                         >
                             <button
                                 className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-400 shadow hover:text-rose-500"
                                 aria-label={`${board.title} を削除`}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                }}
                             >
                                 <svg
                                     viewBox="0 0 24 24"

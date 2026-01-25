@@ -14,4 +14,14 @@ class BoardService
     {
         return $this->boardRepository->getAll();
     }
+
+    public function getBoardById(int $id)
+    {
+        return $this->boardRepository->findById($id);
+    }
+
+    public function getBoardDetail(int $id)
+    {
+        return $this->boardRepository->findWithItems($id);
+    }
 }

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\StickyNoteController;
+use App\Http\Controllers\BoardAreaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +26,13 @@ Route::get('/boards', function () {
     return view('boards');
 });
 Route::get('/boards/data', [BoardController::class, 'index']);
+Route::get('/boards/{id}', function ($id) {
+    return view('board_detail', ['id' => $id]);
+});
+Route::get('/boards/data/{id}', [BoardController::class, 'detail']);
+Route::post('/boards/{id}/sticky-notes', [StickyNoteController::class, 'store']);
+Route::put('/sticky-notes/{id}', [StickyNoteController::class, 'update']);
+Route::delete('/sticky-notes/{id}', [StickyNoteController::class, 'destroy']);
+Route::post('/boards/{id}/areas', [BoardAreaController::class, 'store']);
+Route::put('/areas/{id}', [BoardAreaController::class, 'update']);
+Route::delete('/areas/{id}', [BoardAreaController::class, 'destroy']);
