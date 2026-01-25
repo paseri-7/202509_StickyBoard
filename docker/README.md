@@ -3,7 +3,7 @@
 ## 起動手順
 
 ```bash
-cd /202509_StickyBoard/docker
+cd 202509_StickyBoard/docker
 docker compose up -d --build
 ```
 
@@ -41,3 +41,13 @@ docker compose exec redis redis-cli ping
 
 - Xdebug3 / port 9003 を有効化済み
 - `xdebug.client_host=host.docker.internal` を設定済み（Linux では `extra_hosts` で host-gateway を割り当てています）
+
+## Laravel/Vite 動作確認
+
+```bash
+docker compose exec web php artisan --version
+docker compose exec web php artisan migrate
+docker compose exec web npm -v
+docker compose exec web npm install
+docker compose exec web npm run dev -- --host
+```

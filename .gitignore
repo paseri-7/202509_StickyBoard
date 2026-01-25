@@ -1,24 +1,3 @@
-# =========================
-# Secrets / env (絶対に入れない) ※.env.exampleはpush対象
-# =========================
-# .env
-# .env.*
-# !.env.example
-
-# =========================
-# Dependencies（依存物）
-# =========================
-/vendor
-/node_modules
-
-# =========================
-# Laravel generated（Laravelが動作中に生成するもの）
-# =========================
-/storage/logs
-
-
-# =========================
-# Frontend build outputs (Vite)
-# =========================
-/public/build
-/public/hot
+# design/
+# docs/
+# AGENTS.md
