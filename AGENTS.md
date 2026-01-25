@@ -35,6 +35,16 @@
 - 参照は「構成・命名・配置の考え方」を優先し、コードの大量コピーは行わない。
 - ただし実装（追加/更新/削除）は必ず `202509_StickyBoard/**` 配下のみで行う。
 
+# AI / Laravel Boost 運用
+
+- 202509_StickyBoard/AGENTS.md（本ファイル）を唯一の正とする。
+- 202509_StickyBoard/sticky_board/AGENTS.md は Laravel Boost が生成した補助ガイドライン（手編集しない）。本ファイルと衝突した場合は本ファイルを優先する。
+- codex は MCP 経由で laravel-boost を利用する（.codex/config.toml）。
+
+- 不明点は推測しない。確認できる事項（Laravelの設定、ルート、DB、依存、バージョン、既存実装）は Laravel Boost MCP を使って確認してから判断する。
+- 重要な判断（構成変更・依存追加・設計方針）をする場合は、確認に使ったツール名（例：`mcp__laravel-boost__...`）を回答内に記載する。
+- MCPで確認できない場合のみ、その理由（なぜ確認できないか）を明記した上で仮置きする。
+
 ## 技術スタック（固定）
 
 - Docker / Laravel / React / TypeScript / PostgreSQL / Apache / Redis
