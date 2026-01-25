@@ -26,6 +26,10 @@ Route::get('/boards', function () {
     return view('boards');
 });
 Route::get('/boards/data', [BoardController::class, 'index']);
+Route::get('/boards/create', function () {
+    return view('board_create');
+});
+Route::post('/boards', [BoardController::class, 'store']);
 Route::get('/boards/{id}', function ($id) {
     return view('board_detail', ['id' => $id]);
 });

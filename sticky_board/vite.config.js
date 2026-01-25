@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/components/page/auth/login/login.page.tsx',
                 'resources/js/components/page/board_list/board_list.page.tsx',
                 'resources/js/components/page/board_detail/board_detail.page.tsx',
+                'resources/js/components/page/board_form/board_form.page.tsx',
             ],
             refresh: true,
         }),

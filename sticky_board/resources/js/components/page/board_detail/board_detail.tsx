@@ -2,6 +2,7 @@ import React from "react";
 import { useBoardDetail } from "./board_detail.hooks";
 import StickyNoteItem from "./sticky_note";
 import AreaItem from "./area";
+import ConfirmDialog from "../../ui/ConfirmDialog";
 
 type BoardDetailProps = {
     boardId: number;
@@ -34,6 +35,12 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
     );
     const [isPanelOpen, setIsPanelOpen] = React.useState(false);
     const [zoom, setZoom] = React.useState(1);
+    const [confirmOpen, setConfirmOpen] = React.useState(false);
+    const [confirmTitle, setConfirmTitle] = React.useState("");
+    const [confirmDescription, setConfirmDescription] = React.useState("");
+    const [confirmVariant, setConfirmVariant] =
+        React.useState<"default" | "destructive">("default");
+    const confirmActionRef = React.useRef<null | (() => void)>(null);
     const [selectedStickyId, setSelectedStickyId] = React.useState<
         number | null
     >(null);
@@ -95,9 +102,22 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
         setSelectedAreaId(null);
     };
 
+    const openConfirm = (
+        title: string,
+        description: string,
+        action: () => void,
+        variant: "default" | "destructive" = "default",
+    ) => {
+        confirmActionRef.current = action;
+        setConfirmTitle(title);
+        setConfirmDescription(description);
+        setConfirmVariant(variant);
+        setConfirmOpen(true);
+    };
+
     const handleCreateSticky = async () => {
         const offset = stickyNotes.length * 20;
-        await createSticky({
+        const payload = {
             content: stickyContent || "新しい付箋",
             color: stickyColor,
             due_at: stickyDeadline
@@ -107,43 +127,54 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
             y: 140 + offset,
             width: 220,
             height: 160,
+        };
+        openConfirm("付箋を作成しますか？", "入力内容で付箋を作成します。", async () => {
+            await createSticky(payload);
+            setStickyContent("");
+            setStickyDeadline("");
+            setSelectedStickyId(null);
         });
-        setStickyContent("");
-        setStickyDeadline("");
-        setSelectedStickyId(null);
     };
 
     const handleUpdateSticky = async () => {
         if (!selectedStickyId) {
             return;
         }
-        await updateSticky(selectedStickyId, {
+        const payload = {
             content: stickyContent,
             color: stickyColor,
             due_at: stickyDeadline
                 ? new Date(stickyDeadline).toISOString()
                 : null,
+        };
+        openConfirm("付箋を更新しますか？", "入力内容で付箋を更新します。", async () => {
+            await updateSticky(selectedStickyId, payload);
         });
     };
 
     const handleCreateArea = async () => {
         const offset = areas.length * 24;
-        await createArea({
+        const payload = {
             title: areaTitle || "新しいエリア",
             x: 100 + offset,
             y: 120 + offset,
             width: 360,
             height: 220,
+        };
+        openConfirm("エリアを作成しますか？", "入力内容でエリアを作成します。", async () => {
+            await createArea(payload);
+            setAreaTitle("");
+            setSelectedAreaId(null);
         });
-        setAreaTitle("");
-        setSelectedAreaId(null);
     };
 
     const handleUpdateArea = async () => {
         if (!selectedAreaId) {
             return;
         }
-        await updateArea(selectedAreaId, { title: areaTitle });
+        openConfirm("エリアを更新しますか？", "入力内容でエリアを更新します。", async () => {
+            await updateArea(selectedAreaId, { title: areaTitle });
+        });
     };
 
     const handleZoomIn = () => {
@@ -383,8 +414,15 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                                                     className="rounded-2xl border border-rose-200 px-5 py-3 text-sm font-semibold text-rose-500 hover:bg-rose-50"
                                                     onClick={() =>
                                                         selectedStickyId
-                                                            ? deleteSticky(
-                                                                  selectedStickyId,
+                                                            ? openConfirm(
+                                                                  "付箋を削除しますか？",
+                                                                  "この操作は元に戻せません。",
+                                                                  async () => {
+                                                                      await deleteSticky(
+                                                                          selectedStickyId,
+                                                                      );
+                                                                  },
+                                                                  "destructive",
                                                               )
                                                             : null
                                                     }
@@ -430,8 +468,15 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                                                     className="rounded-2xl border border-rose-200 px-5 py-3 text-sm font-semibold text-rose-500 hover:bg-rose-50"
                                                     onClick={() =>
                                                         selectedAreaId
-                                                            ? deleteArea(
-                                                                  selectedAreaId,
+                                                            ? openConfirm(
+                                                                  "エリアを削除しますか？",
+                                                                  "この操作は元に戻せません。",
+                                                                  async () => {
+                                                                      await deleteArea(
+                                                                          selectedAreaId,
+                                                                      );
+                                                                  },
+                                                                  "destructive",
                                                               )
                                                             : null
                                                     }
@@ -454,6 +499,26 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                     </div>
                 ) : null}
             </div>
+            <ConfirmDialog
+                open={confirmOpen}
+                title={confirmTitle}
+                description={confirmDescription}
+                confirmText={confirmVariant === "destructive" ? "削除" : "実行"}
+                cancelText="キャンセル"
+                variant={confirmVariant}
+                onConfirm={() => {
+                    const action = confirmActionRef.current;
+                    confirmActionRef.current = null;
+                    setConfirmOpen(false);
+                    if (action) {
+                        action();
+                    }
+                }}
+                onClose={() => {
+                    confirmActionRef.current = null;
+                    setConfirmOpen(false);
+                }}
+            />
         </div>
     );
 };

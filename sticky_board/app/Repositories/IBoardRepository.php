@@ -9,4 +9,6 @@ interface IBoardRepository
     public function findById(int $id): \App\Models\Board;
 
     public function findWithItems(int $id): \App\Models\Board;
+
+    public function create(array $data): \App\Models\Board;
 }

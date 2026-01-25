@@ -31,4 +31,9 @@ class BoardRepository implements IBoardRepository
             ->select(['id', 'title', 'description', 'updated_at'])
             ->findOrFail($id);
     }
+
+    public function create(array $data): Board
+    {
+        return Board::create($data);
+    }
 }

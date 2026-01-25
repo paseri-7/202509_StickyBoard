@@ -24,4 +24,9 @@ class BoardService
     {
         return $this->boardRepository->findWithItems($id);
     }
+
+    public function createBoard(array $data)
+    {
+        return $this->boardRepository->create($data);
+    }
 }

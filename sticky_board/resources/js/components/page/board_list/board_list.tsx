@@ -11,7 +11,12 @@ const BoardList: React.FC = () => {
                     <div>
                         <h1 className="text-3xl font-semibold">マイボード</h1>
                     </div>
-                    <button className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-pink-400 to-violet-300 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-pink-200/60 transition hover:from-pink-500 hover:to-violet-400">
+                    <button
+                        className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-pink-400 to-violet-300 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-pink-200/60 transition hover:from-pink-500 hover:to-violet-400"
+                        onClick={() => {
+                            window.location.href = "/boards/create";
+                        }}
+                    >
                         新規ボード作成
                     </button>
                 </div>
