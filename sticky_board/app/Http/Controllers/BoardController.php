@@ -38,4 +38,11 @@ class BoardController extends Controller
 
         return response()->json($this->boardService->updateBoard($id, $data));
     }
+
+    public function destroy(int $id)
+    {
+        $this->boardService->deleteBoard($id);
+
+        return response()->json(['status' => 'ok']);
+    }
 }

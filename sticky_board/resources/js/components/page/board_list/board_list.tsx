@@ -1,8 +1,13 @@
 import React from "react";
 import { useBoardList } from "./board_list.hooks";
+import ConfirmDialog from "../../ui/ConfirmDialog";
 
 const BoardList: React.FC = () => {
-    const { boards, loading } = useBoardList();
+    const { boards, loading, deleteBoard } = useBoardList();
+    const [confirmOpen, setConfirmOpen] = React.useState(false);
+    const [targetBoardId, setTargetBoardId] = React.useState<number | null>(
+        null,
+    );
 
     return (
         <main className="min-h-screen bg-gradient-to-br from-pink-50 via-violet-50 to-sky-50 text-slate-900">
@@ -30,10 +35,12 @@ const BoardList: React.FC = () => {
                             }}
                         >
                             <button
-                                className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-400 shadow hover:text-rose-500"
+                                className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-rose-500 shadow opacity-0 transition group-hover:opacity-100 hover:text-white/90 hover:bg-rose-500"
                                 aria-label={`${board.title} を削除`}
                                 onClick={(event) => {
                                     event.stopPropagation();
+                                    setTargetBoardId(board.id);
+                                    setConfirmOpen(true);
                                 }}
                             >
                                 <svg
@@ -74,6 +81,25 @@ const BoardList: React.FC = () => {
                     </div>
                 )}
             </div>
+            <ConfirmDialog
+                open={confirmOpen}
+                title="ボードを削除しますか？"
+                description="この操作は元に戻せません。"
+                confirmText="削除"
+                cancelText="キャンセル"
+                variant="destructive"
+                onConfirm={async () => {
+                    if (targetBoardId) {
+                        await deleteBoard(targetBoardId);
+                    }
+                    setTargetBoardId(null);
+                    setConfirmOpen(false);
+                }}
+                onClose={() => {
+                    setTargetBoardId(null);
+                    setConfirmOpen(false);
+                }}
+            />
         </main>
     );
 };

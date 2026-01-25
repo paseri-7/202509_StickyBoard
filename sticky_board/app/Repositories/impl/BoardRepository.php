@@ -45,4 +45,9 @@ class BoardRepository implements IBoardRepository
 
         return $board;
     }
+
+    public function delete(int $id): void
+    {
+        Board::whereKey($id)->delete();
+    }
 }

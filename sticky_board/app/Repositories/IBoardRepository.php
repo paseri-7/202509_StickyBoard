@@ -13,4 +13,6 @@ interface IBoardRepository
     public function create(array $data): \App\Models\Board;
 
     public function update(int $id, array $data): \App\Models\Board;
+
+    public function delete(int $id): void;
 }

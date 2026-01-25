@@ -34,4 +34,9 @@ class BoardService
     {
         return $this->boardRepository->update($id, $data);
     }
+
+    public function deleteBoard(int $id): void
+    {
+        $this->boardRepository->delete($id);
+    }
 }

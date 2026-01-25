@@ -4,6 +4,10 @@ import { Board } from "../../../types/Board";
 export const useBoardList = () => {
     const [boards, setBoards] = useState<Board[]>([]);
     const [loading, setLoading] = useState(true);
+    const csrfToken =
+        document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute("content") ?? "";
 
     useEffect(() => {
         let isMounted = true;
@@ -34,5 +38,18 @@ export const useBoardList = () => {
         };
     }, []);
 
-    return { boards, loading };
+    const deleteBoard = async (id: number) => {
+        setBoards((prev) => prev.filter((board) => board.id !== id));
+        const response = await fetch(`/boards/${id}`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+        });
+        if (!response.ok) {
+            throw new Error("Failed to delete board.");
+        }
+    };
+
+    return { boards, loading, deleteBoard };
 };
