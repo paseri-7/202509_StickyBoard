@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Board extends Model
+{
+    protected $fillable = [
+        'title',
+        'description',
+        'updated_at',
+    ];
+}

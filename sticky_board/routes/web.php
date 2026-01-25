@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BoardController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::redirect('/', '/boards');
-Route::view('/login', 'app');
-Route::view('/boards', 'app');
+Route::get('/login', function () {
+    return view('login');
+});
+Route::get('/login/redirect', [LoginController::class, 'redirectToBoards']);
+Route::get('/boards', function () {
+    return view('boards');
+});
+Route::get('/boards/data', [BoardController::class, 'index']);

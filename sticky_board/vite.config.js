@@ -6,7 +6,11 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx'],
+            input: [
+                'resources/css/app.css',
+                'resources/js/components/page/auth/login/login.page.tsx',
+                'resources/js/components/page/board_list/board_list.page.tsx',
+            ],
             refresh: true,
         }),
         react(),
