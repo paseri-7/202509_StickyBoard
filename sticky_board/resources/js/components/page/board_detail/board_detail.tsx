@@ -18,6 +18,17 @@ const STICKY_COLORS = [
     { name: "ピーチ", value: "#FFDAD6" },
 ];
 
+const formatDateTimeLocal = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return "";
+    }
+    const pad = (num: number) => String(num).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+        date.getDate(),
+    )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
 const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
     const {
         board,
@@ -61,7 +72,7 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
             setStickyColor(selectedSticky.color || STICKY_COLORS[0].value);
             setStickyDeadline(
                 selectedSticky.due_at
-                    ? new Date(selectedSticky.due_at).toISOString().slice(0, 16)
+                    ? formatDateTimeLocal(selectedSticky.due_at)
                     : "",
             );
             return;
