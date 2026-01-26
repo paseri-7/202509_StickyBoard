@@ -23,3 +23,9 @@
 - 理由: 参照元に実装が無いため、最小構成でボード詳細の表示検証を優先した。
 - 影響範囲: `sticky_notes`/`board_areas` テーブル、`StickyNote`/`BoardArea` モデル、シードデータ。
 - 代替案: `decimal` で保持し拡大縮小に対応、全ボードに初期データ投入。
+
+- 日付: 2026-01-26
+- 決定事項: ボード一覧のサムネイルはDOM縮小描画で実装し、`BoardThumbnail` コンポーネントに切り出す（Canvas/画像生成への移行は同コンポーネント差し替えで対応）。
+- 理由: 既存のDOM表現を活かして最小工数で一覧反映し、将来の描画方式変更の影響範囲を限定するため。
+- 影響範囲: ボード一覧UI (`resources/js/components/page/board_list/board_thumbnail.tsx`) と一覧APIの取得データ。
+- 代替案: Canvas描画 / サーバーorクライアントでの画像生成。

@@ -10,6 +10,10 @@ class BoardRepository implements IBoardRepository
     public function getAll(): \Illuminate\Support\Collection
     {
         return Board::query()
+            ->with([
+                'stickyNotes:id,board_id,content,color,due_at,x,y,width,height',
+                'areas:id,board_id,title,x,y,width,height',
+            ])
             ->orderByDesc('updated_at')
             ->get(['id', 'title', 'description', 'updated_at']);
     }

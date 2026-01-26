@@ -1,6 +1,7 @@
 import React from "react";
 import { useBoardList } from "./board_list.hooks";
 import ConfirmDialog from "../../ui/ConfirmDialog";
+import BoardThumbnail from "./board_thumbnail";
 
 const BoardList: React.FC = () => {
     const { boards, loading, deleteBoard } = useBoardList();
@@ -57,8 +58,8 @@ const BoardList: React.FC = () => {
                                     <path d="M14 11v6"></path>
                                 </svg>
                             </button>
-                            <div className="aspect-[16/9] bg-gradient-to-br from-pink-100/60 via-violet-100/60 to-sky-100/60 flex items-center justify-center text-5xl text-slate-300">
-                                📌
+                            <div className="aspect-[16/9]">
+                                <BoardThumbnail board={board} />
                             </div>
                             <div className="p-6">
                                 <h2 className="text-xl font-semibold text-slate-900 truncate">
