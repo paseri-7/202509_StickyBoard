@@ -5,6 +5,17 @@ import BoardThumbnail from "./board_thumbnail";
 import AppHeader from "../../ui/AppHeader";
 import { useHeaderData } from "../../../hooks/useHeaderData";
 
+const formatUpdatedAt = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+    const pad = (num: number) => String(num).padStart(2, "0");
+    return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(
+        date.getDate(),
+    )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
 const BoardList: React.FC = () => {
     const { boards, loading, deleteBoard } = useBoardList();
     const headerData = useHeaderData();
@@ -107,7 +118,8 @@ const BoardList: React.FC = () => {
                                         {board.description || "説明なし"}
                                     </p>
                                     <p className="mt-4 text-xs text-slate-400">
-                                        更新日: {board.updatedAt}
+                                        更新日:{" "}
+                                        {formatUpdatedAt(board.updatedAt)}
                                     </p>
                                 </div>
                             </article>

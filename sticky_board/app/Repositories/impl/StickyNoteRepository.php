@@ -12,9 +12,14 @@ class StickyNoteRepository implements IStickyNoteRepository
     public function createForUser(int $userId, array $data): StickyNote
     {
         $boardId = $data['board_id'] ?? null;
-        Board::whereKey($boardId)->where('user_id', $userId)->firstOrFail();
+        $board = Board::whereKey($boardId)
+            ->where('user_id', $userId)
+            ->firstOrFail();
 
-        return StickyNote::create($data);
+        $note = StickyNote::create($data);
+        $board->touch();
+
+        return $note;
     }
 
     public function updateForUser(int $userId, int $id, array $data): StickyNote
@@ -35,17 +40,22 @@ class StickyNoteRepository implements IStickyNoteRepository
 
         $note->fill($data);
         $note->save();
+        $note->board?->touch();
 
         return $note;
     }
 
     public function deleteForUser(int $userId, int $id): void
     {
-        StickyNote::query()
+        $note = StickyNote::query()
             ->whereKey($id)
             ->whereHas('board', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
-            ->delete();
+            ->firstOrFail();
+
+        $board = $note->board;
+        $note->delete();
+        $board?->touch();
     }
 }

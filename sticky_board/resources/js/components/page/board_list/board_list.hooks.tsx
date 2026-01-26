@@ -18,9 +18,19 @@ export const useBoardList = () => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch boards.");
                 }
-                const data = (await response.json()) as Board[];
+                const data = (await response.json()) as (Board & {
+                    updated_at?: string;
+                })[];
                 if (isMounted) {
-                    setBoards(data);
+                    setBoards(
+                        data.map((board) => ({
+                            ...board,
+                            updatedAt:
+                                board.updatedAt ??
+                                board.updated_at ??
+                                "",
+                        })),
+                    );
                 }
             } catch (error) {
                 console.error(error);
