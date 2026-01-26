@@ -6,9 +6,9 @@ use App\Models\BoardArea;
 
 interface IBoardAreaRepository
 {
-    public function create(array $data): BoardArea;
+    public function createForUser(int $userId, array $data): BoardArea;
 
-    public function update(int $id, array $data): BoardArea;
+    public function updateForUser(int $userId, int $id, array $data): BoardArea;
 
-    public function delete(int $id): void;
+    public function deleteForUser(int $userId, int $id): void;
 }

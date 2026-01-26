@@ -5,9 +5,10 @@ EXPOSE 5173
 
 # for php
 RUN apt-get update \
-    && apt-get install -y libzip-dev zip unzip vim libpq-dev locales libmagickwand-dev qpdf ghostscript \
+    && apt-get install -y libzip-dev zip unzip vim libpq-dev locales libmagickwand-dev qpdf ghostscript libjpeg62-turbo-dev libpng-dev libfreetype6-dev \
     && docker-php-ext-configure zip \
-    && docker-php-ext-install pdo_pgsql zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_pgsql zip gd \
     && a2enmod rewrite
 
 # for composer

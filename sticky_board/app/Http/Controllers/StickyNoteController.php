@@ -23,7 +23,9 @@ class StickyNoteController extends Controller
 
         $data['board_id'] = $boardId;
 
-        return response()->json($this->stickyNoteService->create($data));
+        return response()->json(
+            $this->stickyNoteService->createForUser($request->user()->id, $data),
+        );
     }
 
     public function update(int $id, Request $request)
@@ -38,12 +40,18 @@ class StickyNoteController extends Controller
             'height' => ['sometimes', 'integer'],
         ]);
 
-        return response()->json($this->stickyNoteService->update($id, $data));
+        return response()->json(
+            $this->stickyNoteService->updateForUser(
+                $request->user()->id,
+                $id,
+                $data,
+            ),
+        );
     }
 
-    public function destroy(int $id)
+    public function destroy(int $id, Request $request)
     {
-        $this->stickyNoteService->delete($id);
+        $this->stickyNoteService->deleteForUser($request->user()->id, $id);
 
         return response()->json(['status' => 'ok']);
     }

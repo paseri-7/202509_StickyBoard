@@ -10,18 +10,18 @@ class BoardAreaService
         private IBoardAreaRepository $boardAreaRepository,
     ) {}
 
-    public function create(array $data)
+    public function createForUser(int $userId, array $data)
     {
-        return $this->boardAreaRepository->create($data);
+        return $this->boardAreaRepository->createForUser($userId, $data);
     }
 
-    public function update(int $id, array $data)
+    public function updateForUser(int $userId, int $id, array $data)
     {
-        return $this->boardAreaRepository->update($id, $data);
+        return $this->boardAreaRepository->updateForUser($userId, $id, $data);
     }
 
-    public function delete(int $id): void
+    public function deleteForUser(int $userId, int $id): void
     {
-        $this->boardAreaRepository->delete($id);
+        $this->boardAreaRepository->deleteForUser($userId, $id);
     }
 }

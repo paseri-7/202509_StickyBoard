@@ -10,18 +10,18 @@ class StickyNoteService
         private IStickyNoteRepository $stickyNoteRepository,
     ) {}
 
-    public function create(array $data)
+    public function createForUser(int $userId, array $data)
     {
-        return $this->stickyNoteRepository->create($data);
+        return $this->stickyNoteRepository->createForUser($userId, $data);
     }
 
-    public function update(int $id, array $data)
+    public function updateForUser(int $userId, int $id, array $data)
     {
-        return $this->stickyNoteRepository->update($id, $data);
+        return $this->stickyNoteRepository->updateForUser($userId, $id, $data);
     }
 
-    public function delete(int $id): void
+    public function deleteForUser(int $userId, int $id): void
     {
-        $this->stickyNoteRepository->delete($id);
+        $this->stickyNoteRepository->deleteForUser($userId, $id);
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Board;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -30,10 +31,12 @@ class BoardSeeder extends Seeder
             ['title' => 'リリース準備', 'description' => '公開前の最終確認', 'updated_at' => '2026-01-16'],
         ];
 
+        $userId = User::query()->orderBy('id')->value('id');
         $now = Carbon::now();
-        $payload = array_map(static function (array $board) use ($now) {
+        $payload = array_map(static function (array $board) use ($now, $userId) {
             $updatedAt = Carbon::parse($board['updated_at']);
             return [
+                'user_id' => $userId,
                 'title' => $board['title'],
                 'description' => $board['description'],
                 'created_at' => $updatedAt->copy()->lessThan($now) ? $updatedAt : $now,

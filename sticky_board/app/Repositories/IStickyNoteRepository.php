@@ -6,9 +6,9 @@ use App\Models\StickyNote;
 
 interface IStickyNoteRepository
 {
-    public function create(array $data): StickyNote;
+    public function createForUser(int $userId, array $data): StickyNote;
 
-    public function update(int $id, array $data): StickyNote;
+    public function updateForUser(int $userId, int $id, array $data): StickyNote;
 
-    public function delete(int $id): void;
+    public function deleteForUser(int $userId, int $id): void;
 }

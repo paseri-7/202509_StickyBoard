@@ -9,14 +9,18 @@ class BoardController extends Controller
 {
     public function __construct(private BoardService $boardService) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->boardService->fetchBoards());
+        return response()->json(
+            $this->boardService->fetchBoards($request->user()->id),
+        );
     }
 
-    public function detail(int $id)
+    public function detail(int $id, Request $request)
     {
-        return response()->json($this->boardService->getBoardDetail($id));
+        return response()->json(
+            $this->boardService->getBoardDetail($request->user()->id, $id),
+        );
     }
 
     public function store(Request $request)
@@ -25,6 +29,8 @@ class BoardController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
         ]);
+
+        $data['user_id'] = $request->user()->id;
 
         return response()->json($this->boardService->createBoard($data));
     }
@@ -36,12 +42,14 @@ class BoardController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        return response()->json($this->boardService->updateBoard($id, $data));
+        return response()->json(
+            $this->boardService->updateBoard($request->user()->id, $id, $data),
+        );
     }
 
-    public function destroy(int $id)
+    public function destroy(int $id, Request $request)
     {
-        $this->boardService->deleteBoard($id);
+        $this->boardService->deleteBoard($request->user()->id, $id);
 
         return response()->json(['status' => 'ok']);
     }
