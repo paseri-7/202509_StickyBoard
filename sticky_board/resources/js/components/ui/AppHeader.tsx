@@ -22,6 +22,22 @@ const AppHeader: React.FC<AppHeaderProps> = ({
     const [menuOpen, setMenuOpen] = React.useState(false);
     const menuRef = React.useRef<HTMLDivElement>(null);
     const { snack, closeSnack } = useNotificationPolling();
+    const [hasSnackUnread, setHasSnackUnread] = React.useState(false);
+
+    React.useEffect(() => {
+        if (snack) {
+            setHasSnackUnread(true);
+        }
+    }, [snack]);
+
+    React.useEffect(() => {
+        if (unreadCount > 0 && hasSnackUnread) {
+            setHasSnackUnread(false);
+        }
+    }, [unreadCount, hasSnackUnread]);
+
+    const derivedUnreadCount =
+        unreadCount > 0 ? unreadCount : hasSnackUnread ? 1 : 0;
 
     React.useEffect(() => {
         if (!menuOpen) return;
@@ -103,11 +119,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                                     </svg>
                                 </span>
                             )}
-                            {unreadCount > 0 ? (
-                                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
-                                    !
-                                </span>
-                            ) : null}
+                        {derivedUnreadCount > 0 ? (
+                            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
+                                !
+                            </span>
+                        ) : null}
                         </button>
 
                         {menuOpen ? (
@@ -132,9 +148,9 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                                     }
                                 >
                                     <span>通知一覧</span>
-                                    {unreadCount > 0 ? (
+                                    {derivedUnreadCount > 0 ? (
                                         <span className="rounded-full bg-rose-500 px-2 py-0.5 text-xs font-semibold text-white">
-                                            {unreadCount}
+                                            {derivedUnreadCount}
                                         </span>
                                     ) : null}
                                 </button>
