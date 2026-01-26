@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
@@ -15,9 +16,27 @@ class LoginController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
-        $googleUser = Socialite::driver('google')->user();
+        if ($request->query('error')) {
+            return redirect('/login')->withErrors([
+                'login' => 'ログインがキャンセルされました。',
+            ]);
+        }
+
+        if (!$request->has('code')) {
+            return redirect('/login')->withErrors([
+                'login' => '認証コードが取得できませんでした。',
+            ]);
+        }
+
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (InvalidStateException $exception) {
+            return redirect('/login')->withErrors([
+                'login' => 'ログインに失敗しました。もう一度お試しください。',
+            ]);
+        }
         $email = $googleUser->getEmail();
 
         if (!$email) {
