@@ -5,6 +5,7 @@ namespace App\Repositories\impl;
 use App\Models\Board;
 use App\Models\StickyNote;
 use App\Repositories\IStickyNoteRepository;
+use Illuminate\Support\Carbon;
 
 class StickyNoteRepository implements IStickyNoteRepository
 {
@@ -24,6 +25,14 @@ class StickyNoteRepository implements IStickyNoteRepository
                 $query->where('user_id', $userId);
             })
             ->firstOrFail();
+
+        if (array_key_exists('due_at', $data)) {
+            $dueAt = $data['due_at'] ? Carbon::parse($data['due_at']) : null;
+            if ($dueAt === null || $dueAt->greaterThanOrEqualTo(now())) {
+                $note->notified_at = null;
+            }
+        }
+
         $note->fill($data);
         $note->save();
 

@@ -120,7 +120,7 @@ const StickyNoteItem: React.FC<StickyNoteProps> = ({
             } ${
                 isOverdue ? "ring-4 ring-rose-400 ring-offset-2" : ""
             } ${isDragging ? "shadow-2xl" : ""} ${
-                isDragging ? "" : "hover:scale-[1.03] hover:rotate-2"
+                isDragging ? "" : "hover:scale-[1.03] hover:rotate-1"
             }`}
             style={{
                 left: position.x,

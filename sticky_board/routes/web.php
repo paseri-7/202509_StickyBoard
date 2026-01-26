@@ -7,6 +7,7 @@ use App\Http\Controllers\StickyNoteController;
 use App\Http\Controllers\BoardAreaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +33,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
         return view('profile_edit');
     });
+    Route::get('/notifications', function () {
+        return view('notifications');
+    });
     Route::get('/profile/data', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::get('/notifications/data', [NotificationController::class, 'index']);
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
 
     Route::get('/boards', function () {
         return view('boards');

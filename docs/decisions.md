@@ -53,3 +53,15 @@
 - 理由: ヘッダー等のアイコン表示を常に円形で統一し、表示サイズの最適化を行うため。
 - 影響範囲: `ProcessUserAvatar` ジョブ、`intervention/image` 依存追加。
 - 代替案: CSS の `border-radius` のみで対応し、加工は行わない。
+
+- 日付: 2026-01-26
+- 決定事項: 通知一覧のデータは `board_notifications` テーブルで管理し、一覧 API は `page`/`per_page` で取得、既読化は `PATCH /notifications/{id}/read` で更新する。
+- 理由: 通知一覧の無限スクロール要件に合わせ、最小構成でページング・既読化を実装するため。
+- 影響範囲: 通知一覧 API、通知テーブル、フロントの通知一覧画面。
+- 代替案: Laravel の標準 `notifications` テーブルを利用する。
+
+- 日付: 2026-01-27
+- 決定事項: 期限超過通知の重複生成を防ぐため `sticky_notes.notified_at` を追加し、Scheduler で `notifications:generate-overdue` を毎分実行する。アプリ内スナック通知は 30 秒間隔でポーリングする。
+- 理由: 期限超過の検知を確実に行いつつ、同一付箋での通知重複を防ぐため。
+- 影響範囲: 付箋テーブル、通知生成コマンド、Scheduler、ヘッダーのポーリング表示。
+- 代替案: 通知生成済みの判定を `board_notifications` の重複チェックで行う。

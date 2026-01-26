@@ -12,6 +12,7 @@ class StickyNote extends Model
         'content',
         'color',
         'due_at',
+        'notified_at',
         'x',
         'y',
         'width',
@@ -20,6 +21,7 @@ class StickyNote extends Model
 
     protected $casts = [
         'due_at' => 'datetime',
+        'notified_at' => 'datetime',
     ];
 
     public function board(): BelongsTo

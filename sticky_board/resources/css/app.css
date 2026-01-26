@@ -17,3 +17,48 @@
 .animate-pop-in {
   animation: pop-in 220ms ease-out both;
 }
+
+@keyframes snack-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes snack-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.92);
+  }
+}
+
+.animate-snack-in {
+  animation: snack-in 240ms ease-out both;
+}
+
+.animate-snack-out {
+  animation: snack-out 300ms ease-in both;
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 260ms ease-out both;
+}

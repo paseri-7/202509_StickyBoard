@@ -18,9 +18,11 @@ export const useHeaderData = (): HeaderData => {
         document
             .querySelector('meta[name="csrf-token"]')
             ?.getAttribute("content") ?? "";
+    const pollingInterval = 30000;
 
     useEffect(() => {
         let isMounted = true;
+        let timerId: number | null = null;
 
         const cachedAvatar = window.sessionStorage.getItem(
             "profile_avatar_preview",
@@ -64,11 +66,15 @@ export const useHeaderData = (): HeaderData => {
         };
 
         fetchMe();
+        timerId = window.setInterval(fetchMe, pollingInterval);
 
         return () => {
             isMounted = false;
+            if (timerId) {
+                window.clearInterval(timerId);
+            }
         };
-    }, []);
+    }, [pollingInterval]);
 
     return {
         userName,
