@@ -2,9 +2,12 @@ import React from "react";
 import { useBoardList } from "./board_list.hooks";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 import BoardThumbnail from "./board_thumbnail";
+import AppHeader from "../../ui/AppHeader";
+import { useHeaderData } from "../../../hooks/useHeaderData";
 
 const BoardList: React.FC = () => {
     const { boards, loading, deleteBoard } = useBoardList();
+    const headerData = useHeaderData();
     const [confirmOpen, setConfirmOpen] = React.useState(false);
     const [targetBoardId, setTargetBoardId] = React.useState<number | null>(
         null,
@@ -12,6 +15,7 @@ const BoardList: React.FC = () => {
 
     return (
         <main className="min-h-screen bg-gradient-to-br from-pink-50 via-violet-50 to-sky-50 text-slate-900">
+            <AppHeader {...headerData} />
             <div className="mx-auto w-full px-30 py-10">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>

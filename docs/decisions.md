@@ -29,3 +29,9 @@
 - 理由: 既存のDOM表現を活かして最小工数で一覧反映し、将来の描画方式変更の影響範囲を限定するため。
 - 影響範囲: ボード一覧UI (`resources/js/components/page/board_list/board_thumbnail.tsx`) と一覧APIの取得データ。
 - 代替案: Canvas描画 / サーバーorクライアントでの画像生成。
+
+- 日付: 2026-01-26
+- 決定事項: ヘッダーの表示名/未読数は認証・通知の実装前につき仮の固定値（表示名:「ユーザー」、未読数:0）を `useHeaderData` で返す。
+- 理由: 要件にあるヘッダーUIを先行実装し、将来の認証・通知実装時に差し替えしやすくするため。
+- 影響範囲: 共通ヘッダー (`resources/js/components/ui/AppHeader.tsx`) と `resources/js/hooks/useHeaderData.ts`。
+- 代替案: 先に認証/通知APIを実装して動的に表示する。

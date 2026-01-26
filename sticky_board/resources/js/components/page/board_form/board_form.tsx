@@ -1,5 +1,7 @@
 import React from "react";
 import ConfirmDialog from "../../ui/ConfirmDialog";
+import AppHeader from "../../ui/AppHeader";
+import { useHeaderData } from "../../../hooks/useHeaderData";
 
 type Toast = {
     type: "success" | "error";
@@ -26,6 +28,7 @@ const BoardForm: React.FC<BoardFormProps> = ({
     onCancel,
     onSuccessRedirect,
 }) => {
+    const headerData = useHeaderData();
     const [title, setTitle] = React.useState(initialTitle);
     const [description, setDescription] = React.useState(initialDescription);
     const [toast, setToast] = React.useState<Toast | null>(null);
@@ -93,6 +96,7 @@ const BoardForm: React.FC<BoardFormProps> = ({
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-pink-50 via-violet-50 to-sky-50 text-slate-900">
+            <AppHeader {...headerData} />
             <div className="mx-auto max-w-2xl px-6 py-10">
                 <button
                     className="rounded-2xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100"

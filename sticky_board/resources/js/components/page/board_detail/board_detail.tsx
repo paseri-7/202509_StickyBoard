@@ -2,6 +2,8 @@ import React from "react";
 import { useBoardDetail } from "./board_detail.hooks";
 import StickyNoteItem from "./sticky_note";
 import AreaItem from "./area";
+import AppHeader from "../../ui/AppHeader";
+import { useHeaderData } from "../../../hooks/useHeaderData";
 
 type BoardDetailProps = {
     boardId: number;
@@ -29,6 +31,7 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
         updateArea,
         deleteArea,
     } = useBoardDetail(boardId);
+    const headerData = useHeaderData();
     const [editorMode, setEditorMode] = React.useState<"sticky" | "area">(
         "sticky",
     );
@@ -183,6 +186,7 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-pink-50 via-violet-50 to-sky-50 text-slate-900 pb-52">
+            <AppHeader {...headerData} />
             {/* <div className="mx-auto w-full px-30 py-10"></div> */}
             <div className="bg-white border-b border-slate-200 shadow-sm">
                 <div className="mx-auto w-full px-30 py-4">
