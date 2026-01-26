@@ -36,7 +36,7 @@ const BoardList: React.FC = () => {
                             }}
                         >
                             <button
-                                className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-rose-500 shadow opacity-0 transition group-hover:opacity-100 hover:text-white/90 hover:bg-rose-500"
+                                className="absolute right-4 bottom-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-rose-500 border-2 border-rose-500 shadow opacity-0 transition group-hover:opacity-100 hover:text-white/90 hover:bg-rose-500"
                                 aria-label={`${board.title} を削除`}
                                 onClick={(event) => {
                                     event.stopPropagation();
