@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Drivers\Imagick\Driver;
 use Illuminate\Support\Facades\Log;
 
 class ProcessUserAvatar implements ShouldQueue
@@ -52,45 +52,39 @@ class ProcessUserAvatar implements ShouldQueue
 
         $manager = new ImageManager(new Driver());
         $image = $manager->read($tempFullPath)->cover(256, 256);
-        $gdImage = $image->core()->native();
+        $imagick = $image->core()->native();
 
-        if (!is_resource($gdImage) && !$gdImage instanceof \GdImage) {
-            Log::warning('avatar job abort: invalid GD image', [
+        if (!$imagick instanceof \Imagick) {
+            Log::warning('avatar job abort: invalid Imagick image', [
                 'userId' => $this->userId,
             ]);
             return;
         }
 
-        $size = imagesx($gdImage);
-        $radius = $size / 2;
-        $center = $radius;
+        $size = $imagick->getImageWidth();
+        $center = $size / 2;
 
-        $dest = imagecreatetruecolor($size, $size);
-        imagesavealpha($dest, true);
-        $transparent = imagecolorallocatealpha($dest, 0, 0, 0, 127);
-        imagefill($dest, 0, 0, $transparent);
+        $mask = new \Imagick();
+        $mask->newImage($size, $size, new \ImagickPixel('black'));
 
-        for ($y = 0; $y < $size; $y++) {
-            for ($x = 0; $x < $size; $x++) {
-                $dx = $x - $center + 0.5;
-                $dy = $y - $center + 0.5;
-                if (($dx * $dx) + ($dy * $dy) <= ($radius * $radius)) {
-                    $color = imagecolorat($gdImage, $x, $y);
-                    imagesetpixel($dest, $x, $y, $color);
-                }
-            }
-        }
+        $draw = new \ImagickDraw();
+        $draw->setFillColor(new \ImagickPixel('white'));
+        $draw->circle($center, $center, $center, 0);
+        $mask->drawImage($draw);
+        $mask->setImageFormat('png');
 
-        ob_start();
-        imagepng($dest);
-        $pngData = ob_get_clean();
+        $imagick->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
+        $imagick->compositeImage($mask, \Imagick::COMPOSITE_DSTIN, 0, 0);
+        $imagick->setImageFormat('png');
 
-        imagedestroy($dest);
-        if (is_resource($gdImage) || $gdImage instanceof \GdImage) {
-            imagedestroy($gdImage);
-        }
+        $pngData = $imagick->getImagesBlob();
 
-        if ($pngData === false) {
+        $mask->clear();
+        $mask->destroy();
+        $imagick->clear();
+        $imagick->destroy();
+
+        if ($pngData === false || $pngData === '') {
             Log::warning('avatar job abort: png encode failed', [
                 'userId' => $this->userId,
             ]);
