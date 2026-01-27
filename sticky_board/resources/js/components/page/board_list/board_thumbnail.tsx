@@ -3,8 +3,8 @@ import { Board } from "../../../types/Board";
 import { StickyNote } from "../../../types/StickyNote";
 import { BoardArea } from "../../../types/BoardArea";
 
-const CANVAS_WIDTH = 2250;
-const CANVAS_HEIGHT = 1000;
+const CANVAS_WIDTH = 1900;
+const CANVAS_HEIGHT = 700;
 
 type BoardThumbnailProps = {
     board: Board;

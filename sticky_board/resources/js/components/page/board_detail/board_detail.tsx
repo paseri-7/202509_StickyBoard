@@ -18,6 +18,10 @@ const STICKY_COLORS = [
     { name: "ピーチ", value: "#FFDAD6" },
 ];
 
+const PANEL_MIN_HEIGHT = 160;
+const PANEL_MAX_HEIGHT_RATIO = 0.6;
+const PANEL_HEADER_HEIGHT = 64;
+
 const formatDateTimeLocal = (value: string) => {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) {
@@ -60,6 +64,9 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
     );
     const [stickyDeadline, setStickyDeadline] = React.useState("");
     const [areaTitle, setAreaTitle] = React.useState("");
+    const [panelHeight, setPanelHeight] = React.useState(360);
+    const [isResizing, setIsResizing] = React.useState(false);
+    const isResizingRef = React.useRef(false);
 
     const selectedSticky = stickyNotes.find(
         (note) => note.id === selectedStickyId,
@@ -89,6 +96,51 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
         }
         setAreaTitle("");
     }, [selectedArea]);
+
+    React.useEffect(() => {
+        const handleMouseMove = (event: MouseEvent) => {
+            if (!isResizingRef.current) return;
+            const maxHeight = Math.floor(
+                window.innerHeight * PANEL_MAX_HEIGHT_RATIO,
+            );
+            const nextHeight = Math.min(
+                Math.max(window.innerHeight - event.clientY, PANEL_MIN_HEIGHT),
+                maxHeight,
+            );
+            setPanelHeight(nextHeight);
+        };
+
+        const handleMouseUp = () => {
+            if (isResizingRef.current) {
+                isResizingRef.current = false;
+                setIsResizing(false);
+            }
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
+        };
+    }, []);
+
+    React.useEffect(() => {
+        if (!isResizing) {
+            document.body.style.userSelect = "";
+            document.body.style.cursor = "";
+            return;
+        }
+
+        document.body.style.userSelect = "none";
+        document.body.style.cursor = "row-resize";
+
+        return () => {
+            document.body.style.userSelect = "";
+            document.body.style.cursor = "";
+        };
+    }, [isResizing]);
 
     const handleSelectSticky = (id: number) => {
         setSelectedStickyId(id);
@@ -296,7 +348,33 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                 </div>
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 z-40 border-t-2 border-pink-200 bg-white shadow-2xl">
+            <div
+                className="fixed bottom-0 left-0 right-0 z-40 border-t-2 border-pink-200 bg-white shadow-2xl overflow-hidden"
+                style={
+                    isPanelOpen
+                        ? {
+                              height: `${panelHeight}px`,
+                              minHeight: `${PANEL_MIN_HEIGHT}px`,
+                              maxHeight: `${Math.floor(
+                                  window.innerHeight * PANEL_MAX_HEIGHT_RATIO,
+                              )}px`,
+                          }
+                        : undefined
+                }
+            >
+                {isPanelOpen ? (
+                    <div
+                        className="flex items-center justify-center py-1 cursor-row-resize"
+                        onMouseDown={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            isResizingRef.current = true;
+                            setIsResizing(true);
+                        }}
+                    >
+                        <div className="h-1 w-12 rounded-full bg-pink-200"></div>
+                    </div>
+                ) : null}
                 <div
                     className="flex items-center justify-between px-30 py-4 cursor-pointer hover:bg-pink-50/40"
                     onClick={() => setIsPanelOpen((prev) => !prev)}
@@ -307,8 +385,16 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                     </span>
                 </div>
                 {isPanelOpen ? (
-                    <div className="px-6 pb-6">
-                        <div className="mx-auto max-w-3xl">
+                    <div className="px-6 pb-6 overflow-hidden">
+                        <div
+                            className="mx-auto max-w-3xl overflow-auto px-10 pb-14"
+                            style={{
+                                maxHeight: `${Math.max(
+                                    panelHeight - PANEL_HEADER_HEIGHT,
+                                    120,
+                                )}px`,
+                            }}
+                        >
                             <div className="grid grid-cols-2 rounded-2xl bg-slate-100 p-1 text-sm font-semibold">
                                 <button
                                     className={`rounded-xl py-2 ${
@@ -340,7 +426,7 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                                         </label>
                                         <textarea
                                             className="mt-2 w-full rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-sm focus:border-pink-300 focus:outline-none"
-                                            rows={4}
+                                            rows={1}
                                             value={stickyContent}
                                             onChange={(event) =>
                                                 setStickyContent(
