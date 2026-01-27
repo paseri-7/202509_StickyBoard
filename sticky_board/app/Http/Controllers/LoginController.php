@@ -58,8 +58,27 @@ class LoginController extends Controller
                 'password' => Str::random(32),
             ]);
         } else {
+            $googleName = $googleUser->getName();
+            $googleAvatar = $googleUser->getAvatar();
+            $hasCustomAvatar =
+                $user->avatar !== null &&
+                str_contains($user->avatar, '/storage/avatars/');
+
             if (!$user->google_id) {
                 $user->google_id = $googleUser->getId();
+            }
+            if ($googleName && $user->name !== $googleName) {
+                $user->name = $googleName;
+            }
+            if (
+                $googleAvatar &&
+                !$hasCustomAvatar &&
+                $user->avatar !== $googleAvatar
+            ) {
+                $user->avatar = $googleAvatar;
+            }
+
+            if ($user->isDirty()) {
                 $user->save();
             }
         }
