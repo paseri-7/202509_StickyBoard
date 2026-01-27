@@ -468,16 +468,27 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                                         <label className="text-sm font-semibold text-slate-700">
                                             期限（任意）
                                         </label>
-                                        <input
-                                            type="datetime-local"
-                                            className="mt-2 w-full rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-sm focus:border-pink-300 focus:outline-none"
-                                            value={stickyDeadline}
-                                            onChange={(event) =>
-                                                setStickyDeadline(
-                                                    event.target.value,
-                                                )
-                                            }
-                                        />
+                                        <div className="mt-2 flex flex-wrap gap-3">
+                                            <input
+                                                type="datetime-local"
+                                                className="min-w-[220px] flex-1 rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-sm focus:border-pink-300 focus:outline-none"
+                                                value={stickyDeadline}
+                                                onChange={(event) =>
+                                                    setStickyDeadline(
+                                                        event.target.value,
+                                                    )
+                                                }
+                                            />
+                                            <button
+                                                type="button"
+                                                className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-semibold text-black bg-gray-100 hover:bg-gray-50"
+                                                onClick={() =>
+                                                    setStickyDeadline("")
+                                                }
+                                            >
+                                                期限クリア
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="flex gap-3 pt-2">
                                         {selectedSticky ? (
@@ -489,7 +500,7 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
                                                     更新
                                                 </button>
                                                 <button
-                                                    className="rounded-2xl border border-rose-200 px-5 py-3 text-sm font-semibold text-rose-500 hover:bg-rose-50"
+                                                    className="rounded-2xl border border-rose-200 px-5 py-3 text-sm font-semibold text-rose-500 bg-rose-50 hover:bg-white"
                                                     onClick={async () => {
                                                         if (!selectedStickyId) {
                                                             return;
