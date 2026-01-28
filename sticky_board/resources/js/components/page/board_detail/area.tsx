@@ -23,6 +23,7 @@ const AreaItem: React.FC<AreaProps> = ({
         width: area.width,
         height: area.height,
     });
+    const hasMovedRef = React.useRef(false);
     const startRef = React.useRef({
         x: 0,
         y: 0,
@@ -51,6 +52,9 @@ const AreaItem: React.FC<AreaProps> = ({
             const dy = event.clientY - startRef.current.y;
 
             if (isDragging) {
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                    hasMovedRef.current = true;
+                }
                 setRect({
                     x: startRef.current.areaX + dx,
                     y: startRef.current.areaY + dy,
@@ -61,6 +65,9 @@ const AreaItem: React.FC<AreaProps> = ({
             }
 
             if (isResizing && resizeHandle) {
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                    hasMovedRef.current = true;
+                }
                 let next = { ...rect };
 
                 if (resizeHandle.includes("e")) {
@@ -98,6 +105,9 @@ const AreaItem: React.FC<AreaProps> = ({
                 width: Math.round(rect.width),
                 height: Math.round(rect.height),
             });
+            window.setTimeout(() => {
+                hasMovedRef.current = false;
+            }, 0);
         };
 
         document.addEventListener("mousemove", handleMouseMove);
@@ -111,8 +121,8 @@ const AreaItem: React.FC<AreaProps> = ({
 
     const handleMouseDown = (event: React.MouseEvent) => {
         event.stopPropagation();
-        onSelect(area.id);
         setIsDragging(true);
+        hasMovedRef.current = false;
         startRef.current = {
             x: event.clientX,
             y: event.clientY,
@@ -130,6 +140,7 @@ const AreaItem: React.FC<AreaProps> = ({
         event.stopPropagation();
         onSelect(area.id);
         setIsResizing(true);
+        hasMovedRef.current = false;
         setResizeHandle(handle);
         startRef.current = {
             x: event.clientX,
@@ -154,7 +165,7 @@ const AreaItem: React.FC<AreaProps> = ({
             }}
         >
             <div
-                className={`absolute inset-0 rounded-3xl border-4 pointer-events-auto cursor-move transition ${
+            className={`absolute inset-0 rounded-3xl border-4 pointer-events-auto cursor-move transition ${
                     isSelected
                         ? "border-pink-300 shadow-lg"
                         : "border-slate-400/30 hover:border-pink-200"
@@ -162,7 +173,9 @@ const AreaItem: React.FC<AreaProps> = ({
                 onMouseDown={handleMouseDown}
                 onClick={(event) => {
                     event.stopPropagation();
-                    onSelect(area.id);
+                    if (!hasMovedRef.current) {
+                        onSelect(area.id);
+                    }
                 }}
             />
             <div
