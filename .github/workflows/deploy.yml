@@ -1,0 +1,29 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_SSH_PORT || 22 }}
+          script: |
+            set -euo pipefail
+            cd /home/ubuntu/202509_StickyBoard
+            git pull
+            cd docker
+            docker compose exec web composer install --no-dev --optimize-autoloader
+            docker compose exec web php artisan migrate --force
+            docker compose exec web php artisan config:clear
+            docker compose exec web npm ci
+            docker compose exec web npm run build
