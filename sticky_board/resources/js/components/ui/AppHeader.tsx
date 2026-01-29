@@ -85,7 +85,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                             StickyBoard
                         </a>
                         <span className="text-sm text-slate-600">
-                            {userName}さん ようこそ～
+                            {userName}さん ようこそ！！
                         </span>
                     </div>
 
