@@ -63,11 +63,12 @@ class LoginController extends Controller
             $hasCustomAvatar =
                 $user->avatar !== null &&
                 str_contains($user->avatar, '/storage/avatars/');
+            $hasCustomName = $user->name !== null && $user->name !== '';
 
             if (!$user->google_id) {
                 $user->google_id = $googleUser->getId();
             }
-            if ($googleName && $user->name !== $googleName) {
+            if ($googleName && !$hasCustomName && $user->name !== $googleName) {
                 $user->name = $googleName;
             }
             if (
