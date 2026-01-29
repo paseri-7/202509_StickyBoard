@@ -85,7 +85,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                             StickyBoard
                         </a>
                         <span className="text-sm text-slate-600">
-                            {userName}さん ようこそ！
+                            {userName}さん ようこそ～
                         </span>
                     </div>
 
@@ -119,11 +119,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                                     </svg>
                                 </span>
                             )}
-                        {derivedUnreadCount > 0 ? (
-                            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
-                                !
-                            </span>
-                        ) : null}
+                            {derivedUnreadCount > 0 ? (
+                                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
+                                    !
+                                </span>
+                            ) : null}
                         </button>
 
                         {menuOpen ? (

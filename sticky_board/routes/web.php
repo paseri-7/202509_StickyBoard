@@ -20,7 +20,7 @@ use App\Http\Controllers\NotificationController;
 |
 */
 
-Route::redirect('/', '/boards');
+Route::redirect('/', '/login');
 Route::get('/login', function () {
     return view('login');
 });
